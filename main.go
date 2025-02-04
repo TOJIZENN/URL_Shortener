@@ -57,9 +57,15 @@ func shorturlhandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	shortURL := createurl(data.URL)
-	response := map[string]string{
-		"short_url": fmt.Sprintf("http://localhost:3000/redirect/%s", shortURL),
-	}
+	// Get Render’s dynamically assigned domain
+domain := os.Getenv("RENDER_EXTERNAL_URL")
+if domain == "" {
+	domain = "https://url-shortener-1.onrender.com" // Fallback to your Render domain
+}
+
+response := map[string]string{
+	"short_url": fmt.Sprintf("%s/redirect/%s", domain, shortURL),
+}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
